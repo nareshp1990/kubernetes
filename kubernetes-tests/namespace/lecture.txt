@@ -1,0 +1,6 @@
+Default namespaces created when cluster is up
+
+1. Default
+2. kube-system
+3. kube-public
+
