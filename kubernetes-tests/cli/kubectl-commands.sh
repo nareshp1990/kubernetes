@@ -112,6 +112,13 @@ kubectl describe secrets
 #get secrets info in yaml format
 kubectl get secrets secret-name -o yaml
 
+#Craete secret
+kubectl create secret docker-registry private-docker-registry --docker-server=http://192.168.1.50:5000 --docker-username=admin --docker-password=admin123 --docker-email=patchipulusu.naresh@gmail.com
+
+#Get secret info as json format
+kubectl get secret private-docker-registry --output="jsonpath={.data.\.dockerconfigjson}" | base64 --decode
+
+
 
 
 
