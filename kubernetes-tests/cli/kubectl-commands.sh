@@ -120,6 +120,39 @@ kubectl get secret private-docker-registry --output="jsonpath={.data.\.dockercon
 
 
 
+kubectl create serviceaccount dashboard-sa
+
+kubectl get serviceaccount
+
+kubectl describe serviceaccount dashboard-sa
+
+kubectl describe secret secret-name
+
+curl https://localhost:6443/api -insecure --header "Authorization: Bearer token"
+
+Taints are set on nodes
+
+Tollerents are set on pods
+
+kubectl taint nodes node-name key=value:taint-effect
+
+NoSchedule | PreferNoSchedule | NoExecute
+
+Example: kubectl taint nodes node1 app=blue:NoSchedule
+
+#Label Nodes
+kubectl label nodes node-name label-key=label-value
+
+#Node Affinity Types Available
+# 1. requiredDuringSchedulingIgnoredDuringExecution
+# 2. preferedDuringSchedulingIgnoredDuringExecution
+
+#Planned
+# 1. requiredDuringSchedulingRequiredDuringExecution
+
+
+
+
 
 
 
