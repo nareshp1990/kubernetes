@@ -6,6 +6,17 @@ metadata:
   labels:
     app: app-pod-nginx
 spec:
+  securityContext:
+    runAsUser: 1000
   containers:
     - name: container-nginx
       image: nginx
+      securityContext:
+        runAsUser: 1000
+        capabilities:
+          add: ["MAC_ADMIN"]
+      envFrom:
+        - configMapRef:
+            name: config-map
+        - secretRef:
+            name: secret-app

@@ -63,6 +63,20 @@ kubectl config set-context $(kubectl config current-context) --namespace=namespa
 
 kubectl get pods --all-namespaces
 
+kubectl get configmaps
+
+kubectl describe configmaps
+
+echo -n 'mysql' | base64
+
+echo -n 'bXlzcWw=' | base64 --decode
+
+kubectl get secrets
+
+kubectl describe secrets
+
+kubectl get secrets secret-name -o yaml
+
 
 
 
