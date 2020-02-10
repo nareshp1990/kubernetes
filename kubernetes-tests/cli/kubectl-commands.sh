@@ -151,6 +151,36 @@ kubectl label nodes node-name label-key=label-value
 # 1. requiredDuringSchedulingRequiredDuringExecution
 
 
+kubectl logs -f pod-name container-name
+
+kubectl top node
+
+kubectl top pod
+
+kubectl get pods --selector app=nginx
+
+kubectl rollout status deployment/deployment-name
+
+kubectl rollout history deployment/deployment-name
+
+# Deployment Strategies
+# 1. recreate
+# 2. Rolling Update
+
+kubectl set image deployment/deployment-name nginx=nginx:1.9.1
+
+#undo previous deployment
+kubectl rollout undo deployment/deployment-name
+
+kubectl get jobs
+
+kubectl delete job job-name
+
+kubectl get cronjob
+
+# NodePort Range : 30000-32767
+
+
 
 
 

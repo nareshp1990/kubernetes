@@ -5,6 +5,8 @@ metadata:
   namespace: namespace-nginx
   labels:
     app: app-pod-nginx
+  annotations:
+    buildVersion: 1.4
 spec:
   securityContext:
     runAsUser: 1000
@@ -18,6 +20,24 @@ spec:
         limits:
           memory: "256Mi"
           cpu: 1
+      readinessProbe:
+        httpGet:
+          path: /api/ready
+          port: 8080
+        initialDelaySeconds: 10
+        periodSeconds: 5
+        failureThreshold: 8
+        tcpSocket:
+          port: 3306
+        exec:
+          command:
+            - cat
+            - /app/is_ready
+      livenessProbe:
+        httpGet:
+          path: /api/healthy
+          port: 8080
+  restartPolicy: Always | Never
   tolerations:
     - key: "app"
       operator: "Equal"
