@@ -1,0 +1,58 @@
+def VersionNumber = VersionNumber([projectStartDate: '2017-03-20', versionNumberString: '1.0.1_${BUILDS_ALL_TIME, XXX}', worstResultForIncrement: 'SUCCESS'])
+def regs = ['dockerhub': "https://192.168.22.41:5000", 'stage-nexus': "http://nexus.gaiansolutions.com:8080"]
+pipeline {
+    agent any
+
+    tools { nodejs "node11" }
+
+    stages {
+
+        stage('Cloning Git') {
+            steps {
+                git([url: 'https://github.com/gaiangroup/adwize-ui.git', branch: 'QA', credentialsId: '75960173-3c65-4f9c-8d2e-82a9413af739'])
+            }
+        }
+        stage('Versioning') {
+            steps {
+                echo "using version ${VersionNumber}"
+            }
+        }
+        stage('Install dependencies') {
+            steps {
+                sh 'node -v'
+                sh 'cd Adwize/ && rm -rf node_modules package-lock.json && npm install && ./node_modules/.bin/gulp inject:dev'
+            }
+        }
+        stage('Docker Build Image & Tag') {
+            steps {
+                echo "using version in stage ${VersionNumber}"
+                sh """
+            docker build -t 192.168.22.41:5000/adwizeui:${VersionNumber} -f docker/Dockerfile .
+            docker tag 192.168.22.41:5000/adwizeui:${VersionNumber} 192.168.22.41:5000/adwizeui:latest
+            """
+                script {
+                    try {
+                        regs.each { k, v ->
+                            echo "using auth ${k}"
+                            withDockerRegistry([credentialsId: k, url: v]) {
+                                sh """
+                                docker tag 192.168.22.41:5000/adwizeui:${VersionNumber} ${v.split('//')[1]}/adwizeui:${VersionNumber}
+                                docker tag 192.168.22.41:5000/adwizeui:latest ${v.split('//')[1]}/adwizeui:latest
+                                docker push ${v.split('//')[1]}/adwizeui:latest
+                                docker push ${v.split('//')[1]}/adwizeui:${VersionNumber}
+                                """
+                            }
+                        }
+                    } catch (err) {
+                        echo "got exception when pushing to ${v}"
+                    } finally {
+                        sh 'docker rmi 192.168.22.41:5000/adwizeui:' + VersionNumber + ' --force'
+                        sh 'docker rmi 192.168.22.41:5000/adwizeui:latest --force'
+                    }
+
+                }
+
+            }
+        }
+    }
+}
